@@ -22,6 +22,8 @@ API_ID = environ.get('API_ID')
 API_HASH = environ.get('API_HASH')
 BOT_TOKEN = environ.get('BOT_TOKEN')
 API_KEY = environ.get('API_KEY', 'e3eddb3e7c5513eee187120fce788ddc4a1a643b')
+API_KEY1 = environ.get('API_KEY', 'e3eddb3e7c5513eee187120fce788ddc4a1a643b')
+API_KEY2 = environ.get('API_KEY', 'e3eddb3e7c5513eee187120fce788ddc4a1a643b')
 
 bot = Client('droplink bot',
              api_id=API_ID,
@@ -35,7 +37,7 @@ bot = Client('droplink bot',
 async def start(bot, message):
     await message.reply(
         f"**Hi {message.chat.first_name}!**\n\n"
-        "I'm a specialised bot for shortening Droplink.co links which can help you earn money by just sharing links. Made by <a href=\"https://github.com/dakshy\">ToonsHub</a>.")
+        "I'm a specialised bot for shortening Droplink.co links which can help you earn money by just sharing links. Made by <a href=\"https://github.com/JAsuranbots\">JAsuran Bots</a>.")
 
 
 @bot.on_message(filters.regex(r'https?://[^\s]+') & filters.private)
@@ -45,7 +47,7 @@ async def link_handler(bot, message):
     for num in range(len(links)):
       try:
         short_link = await get_shortlink(links[num])
-        await message.reply(f'**Long URL:** {links[num]}\n**Shortened URL:** {short_link}\n\nMade by <a href="https://github.com/dakshy">ToonsHub</a>', quote=True, disable_web_page_preview=True)
+        await message.reply(f'**Shortened URLs:**\n\n{short_link}\n\n{short_link1}\n\n{short_link2}', quote=True, disable_web_page_preview=True)
       except Exception as e:
         await message.reply(f'Error: {e}', quote=True)
 
@@ -56,6 +58,25 @@ async def get_shortlink(link):
 
     async with aiohttp.ClientSession() as session:
         async with session.get(url, params=params, raise_for_status=True) as response:
+            data = await response.json()
+            return data["shortenedUrl"]
+          
+          
+async def get_shortlink1(link):
+    url1 = 'https://earnforclick.online/api'
+    params = {'api': API_KEY1, 'url': link}
+
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url1, params=params, raise_for_status=True) as response:
+            data = await response.json()
+            return data["shortenedUrl"]
+          
+async def get_shortlink2(link):
+    url2 = 'https://pdiskshortener.in/api'
+    params = {'api': API_KEY2, 'url': link}
+
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url2, params=params, raise_for_status=True) as response:
             data = await response.json()
             return data["shortenedUrl"]
 
